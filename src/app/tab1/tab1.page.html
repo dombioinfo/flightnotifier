@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Radar
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-header class="center">
+        Distance min : {{ minDistance }}  | Altititude min: {{ minAltitude }}          
+    </ion-card-header>
+    <ion-card-content>
+      <div style="width:300px;">
+        <canvas #radarLonLat></canvas>
+      </div>
+      <ion-list>
+        <ion-header>Live</ion-header>
+        <ion-item *ngFor="let plane of planeList">
+          <!-- <ion-label> -->
+            {{ plane.flight }} : gps: {{ plane.lat }},{{ plane.lon }}; alt: {{ plane.altitude }}
+          <!-- </ion-label> -->
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

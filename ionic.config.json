@@ -1,0 +1,8 @@
+{
+  "name": "flightnotifier",
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
+  "type": "angular"
+}

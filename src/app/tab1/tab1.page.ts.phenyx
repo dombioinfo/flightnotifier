@@ -1,0 +1,110 @@
+import { Component,
+         ElementRef,
+         ViewChild } from '@angular/core';
+import { Chart } from 'chart.js';
+
+@Component({
+  selector: 'app-tab1',
+  templateUrl: 'tab1.page.html',
+  styleUrls: ['tab1.page.scss']
+})
+export class Tab1Page {
+  @ViewChild('radarLonLat') radarLonLatCanvas;
+  @ViewChild('radarAlt') radarAltCanvas;
+  
+  radarLonLat: any;
+  colorArray: any;
+  datasetArray: Dataset[];
+  initCurrentLatitude: any;
+  initCurrentLongitude: any;
+  initCurrentAltitude: any;
+  
+  constructor(/*private geolocation: Geolocation*/) {}
+
+  ionViewDidEnter() {
+    /*
+        this.geolocation.getCurrentPosition().then((resp) => {
+        initCurrentLatitude = resp.coords.latitude
+        initCurrentLongitude =  resp.coords.longitude
+    }).catch((error) => {
+        console.log('Error getting location', error);
+    });
+    */
+
+    this.createRadarLonLat();
+        
+    setInterval(function() { this.updateRadarLonLat(); }.bind(this), 2000);
+  }
+
+  initDataset(/*planeList: Object[]*/) {
+    let dataArray: number[] = [];
+    for (let i=0; i<360; i+=10) {
+        dataArray.push(0.0);
+    }
+    dataArray[0] = 5000; // distance en mètre
+    let dataset = new Dataset('', dataArray);
+
+    this.datasetArray.push(dataset);
+    console.log("[initDataset] dataset : ");
+    console.log(dataset);
+    /*
+    planeList.forEach(function(plane: Object) {
+      dateset = datasetTemplate;
+      dataset.data = [];
+    });
+    */
+  }
+
+  createRadarLonLat() {
+    console.log("[createRadarLonLat]");
+    this.initDataset();
+
+    let labelArray: String[] = [];
+    for (let i=0; i<360; i+=10) {
+        let label = (i%30 == 0) ? String(i) : String("");
+        labelArray.push(label);
+    }
+
+    this.radarLonLat = new Chart(this.radarLonLatCanvas.nativeElement, {
+      type: 'radar',
+      data: {
+        labels: labelArray,
+        datasets: this.datasetArray
+      },
+      option: {
+        scale: {
+          // Hides the scale
+          display: false
+        }
+      }
+    }); 
+    this.radarLonLat.height = 400;
+  }
+
+  updateRadarLonLat() {
+    let newData = [];
+    for (let i=0; i<360; i+=10) {
+      newData.push(0.0);
+    }
+    let min = 0;
+    let max = 360;
+    let x = Math.floor(Math.random()*(max-min+1)+min);
+    let distance = Math.floor(Math.random()*(max*10-min+1)+min);
+    newData[x] = distance;
+
+    this.radarLonLat.data.datasets[1].data = newData;
+
+    // redraw chart
+    this.radarLonLat.update();
+  }
+
+}
+
+class Dataset {
+  public label: string;
+  public data: number[];
+  public constructor(inLabel: string, inData: number[]) {
+    this.label = inLabel;
+    this.data = inData;
+  }
+}
